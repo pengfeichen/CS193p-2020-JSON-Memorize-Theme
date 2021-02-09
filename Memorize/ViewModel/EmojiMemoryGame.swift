@@ -14,10 +14,19 @@ class EmojiMemoryGame: ObservableObject {
     @Published private var model: MemoryGame<String>
     
     static func createMemoryGame(with theme: Theme) -> MemoryGame<String> {
-        let numberOfPairsOfCards = theme.numberOfCards ?? Int.random(in: 2..<theme.emoji.count)
-        let emoji = theme.emoji
         
-        return MemoryGame<String>(numberOfPairsOfCards: numberOfPairsOfCards) { emoji[$0] }
+        var json: Data? {
+            try? JSONEncoder().encode(theme)
+        }
+        
+        if let data = json {
+            if let result = data.utf8 {
+                print(result)
+            }
+        }
+        
+        
+        return MemoryGame<String>(numberOfPairsOfCards: theme.numberOfCards) { theme.emoji[$0] }
     }
     
     init() {
