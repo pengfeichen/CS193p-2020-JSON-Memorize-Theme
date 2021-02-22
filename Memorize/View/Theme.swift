@@ -6,22 +6,62 @@
 //
 import SwiftUI
 
-struct Theme: Codable {
+struct Theme: Codable, Identifiable, Hashable {
     var name: String
-    var emoji: [String]
+    var emojis: [String] {
+        didSet {
+            if numberOfPlayingCards > numberOfCards {
+                numberOfPlayingCards = numberOfCards
+            }
+        }
+    }
     var color: UIColor.RGB
-    var numberOfCards: Int
+    
+    var numberOfCards: Int {
+        emojis.count
+    }
+    
+    var removedEmojis = [String]()
+    
+    var numberOfPlayingCards: Int
+    
+    // Conform to Identifiable
+    var id = UUID()
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
     
     func foregroundColor() -> Color {
         Color(self.color)
     }
+    
+    static func foregroundColor(color: UIColor.RGB) -> Color {
+        Color(color)
+    }
+    
+    var json: Data? {
+         try? JSONEncoder().encode(self)
+    }
+    
+    static let colors: [UIColor.RGB] = [
+        UIColor(.purple).rgb,
+        UIColor(.red).rgb,
+        UIColor(.blue).rgb,
+        UIColor(.gray).rgb,
+        UIColor(.green).rgb,
+        UIColor(.orange).rgb
+        
+    ]
+    
+    static let themes: [Theme] = [
+        Theme(name: "Animals", emojis: ["🐸","🦊"], color: UIColor(.green).rgb, numberOfPlayingCards: 2),
+        Theme(name: "Sports", emojis: ["🏈","🎾"], color: UIColor(.blue).rgb, numberOfPlayingCards: 2),
+        Theme(name: "Faces", emojis: ["😯","😬"], color: UIColor(.yellow).rgb, numberOfPlayingCards: 2),
+        Theme(name: "Flags", emojis: ["🇨🇳","🇺🇸"], color: UIColor(.gray).rgb, numberOfPlayingCards: 2),
+        Theme(name: "Food", emojis: ["🧀","🍔"], color: UIColor(.red).rgb, numberOfPlayingCards: 2),
+        Theme(name: "Halloween", emojis: ["🍫", "❤️"], color: UIColor(.orange).rgb, numberOfPlayingCards: 2)
+    ]
 }
 
-let themes: [Theme] = [
-    Theme(name: "Animals", emoji: ["🐱","🐶","🐼","🐮","🐸","🦊"], color: UIColor(.green).rgb, numberOfCards: 4),
-    Theme(name: "Sports", emoji: ["⚽️","🏀","🏈","⚾️","🎾","🏐"], color: UIColor(.blue).rgb, numberOfCards: 4),
-    Theme(name: "Faces", emoji: ["😯","😬","🤭","🤗","🤤","🙄"], color: UIColor(.yellow).rgb, numberOfCards: 4),
-    Theme(name: "Flags", emoji: ["🇨🇳","🇺🇸","🇸🇬","🇯🇵","🇰🇷","🇦🇺"], color: UIColor(.gray).rgb,numberOfCards: 6),
-    Theme(name: "Food", emoji: ["🥦","🌽","🌶","🧄","🧀","🍔"], color: UIColor(.red).rgb, numberOfCards: 4),
-    Theme(name: "Halloween", emoji: ["👻","🎃", "🕸","🍫", "❤️"], color: UIColor(.orange).rgb, numberOfCards: 5)
-]
+

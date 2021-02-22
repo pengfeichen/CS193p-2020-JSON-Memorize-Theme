@@ -12,8 +12,7 @@ struct EmojiMemoryGameView: View {
     
     var body: some View {
         VStack{
-            Text("Theme: \(viewModel.theme.name)")
-            Text("Current Score: \(viewModel.score)")
+
             Grid(viewModel.cards) { card in
                 CardView(card: card).onTapGesture {
                     withAnimation(.linear(duration: 0.75)){
@@ -22,7 +21,6 @@ struct EmojiMemoryGameView: View {
                 }
                 .padding(5)
             }
-            .padding()
             .foregroundColor(viewModel.theme.foregroundColor())
             
             Button("New Game") {
@@ -33,8 +31,14 @@ struct EmojiMemoryGameView: View {
             .padding()
             
         }
-    }
+            .padding()
+            .navigationTitle(viewModel.theme.name)
+            .navigationBarItems(trailing: Text("Current Score: \(viewModel.score)"))
+        
+
 }
+
+
 
 struct CardView: View {
     var card: MemoryGame<String>.Card
@@ -81,12 +85,4 @@ struct CardView: View {
         min(size.width, size.height) * fontScaleFactor
     }
 }
-
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        let game = EmojiMemoryGame()
-        game.choose(card: game.cards[0])
-        return EmojiMemoryGameView(viewModel: game)
-    }
 }

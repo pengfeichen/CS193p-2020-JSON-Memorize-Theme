@@ -74,6 +74,8 @@ struct MemoryGame<CardContent: Equatable> {
         }
     }
     
+    
+    
     struct Card: Identifiable {
         var isFaceUp: Bool = false {
             didSet {
